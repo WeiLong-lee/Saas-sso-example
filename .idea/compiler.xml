@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="sso-auth-server" />
+        <module name="pigx-sso-client-demo" />
+        <module name="pigx-auth" />
+        <module name="auth-client-2" />
+        <module name="auth-client-1" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="saas-common" target="1.8" />
+      <module name="saas-common-security" target="1.8" />
+      <module name="Saas-sso-example" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Saas-sso-example" options="" />
+      <module name="auth-client-1" options="-parameters" />
+      <module name="auth-client-2" options="-parameters" />
+      <module name="pigx-auth" options="-parameters" />
+      <module name="pigx-sso-client-demo" options="-parameters" />
+      <module name="saas-common" options="" />
+      <module name="saas-common-security" options="-parameters" />
+      <module name="sso-auth-server" options="-parameters" />
+    </option>
+  </component>
+</project>

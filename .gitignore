@@ -1,0 +1,3 @@
+# Project exclude paths
+/pigx-auth/target/
+/pigx-sso-client-demo/target/

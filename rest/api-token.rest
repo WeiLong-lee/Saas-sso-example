@@ -1,0 +1,45 @@
+###  前端根据密码方式登录 获取 token
+POST {{host-sso}}:{{port}}/oauth/token?grant_type=password&username ={{username}}&password={{password}}&scope={{scope}}
+Accept:application/json
+Cache-Control: no-cache
+Authorization: "Basic Y2xpZW50MToxMjM0NTY="
+
+> {% client.global.set("token", response.body.data); %}
+
+###
+
+###  前端授权码登录 获取 token
+POST {{host-sso}}:{{port}}/auth/oauth/authorize?response_type=code&client_id=client1&redirect_uri=http://sso-taobao:10081/client1&scope=all&state=hello
+Accept:application/json
+Cache-Control: no-cache
+
+
+> {% client.global.set("token", response.body.data); %}
+
+###
+
+
+### 验证token
+POST {{host-sso}}:{{port}}/xxl-sso-server/app/logincheck?sessionId={{token}}
+Content-Type: application/json
+Accept: application/json
+Cache-Control: no-cache
+
+###
+
+### 退出token登录
+POST {{host-sso}}:{{port}}/xxl-sso-server/app/logout?sessionId={{token}}
+Content-Type: application/json
+Accept: application/json
+Cache-Control: no-cache
+
+###
+
+### 验证携带token 访问
+GET {{host-sso}}:{{port}}/xxl-sso-token-sample-springboot/
+Accept: application/json
+Cache-Control: no-cache
+xxl_sso_sessionid: {{token}}
+
+###
+

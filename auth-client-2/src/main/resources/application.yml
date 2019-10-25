@@ -1,0 +1,18 @@
+auth-server: http://sso-login:10080/auth
+server:
+  port: 10082
+  servlet:
+    context-path: /client2
+security:
+  oauth2:
+    client:
+      client-id: client2
+      client-secret: 12345
+      user-authorization-uri: ${auth-server}/oauth/authorize
+      access-token-uri: ${auth-server}/oauth/token
+      registered-redirect-uri: http://sso-tmall:10082/client1
+
+logging:
+  level:
+    org.springframework: debug
+
