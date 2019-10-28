@@ -70,18 +70,6 @@ public class SaasTokenEndpoint {
         return SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
     }
 
-    @GetMapping("/exit")
-    public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        new SecurityContextLogoutHandler().logout(request, null, null);
-         String tokenValue = CookieUtil.getValue(request, "JSESSIONID");
-        OAuth2AccessToken accessToken = tokenStore.readAccessToken(tokenValue);
-        OAuth2Authentication auth2Authentication = tokenStore.readAuthentication(accessToken);
-         cacheManager.getCache("user_details")
-                .evict(auth2Authentication.getName());
-        tokenStore.removeAccessToken(accessToken);
-        response.sendRedirect(request.getHeader("referer"));
-    }
-
     /**
      * 退出token
      *

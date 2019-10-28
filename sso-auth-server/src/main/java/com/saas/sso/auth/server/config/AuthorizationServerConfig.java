@@ -5,6 +5,7 @@ import com.saas.sso.auth.server.domain.SaasUser;
 import com.saas.sso.auth.server.service.SaasClientDetailsService;
 import com.saas.sso.auth.server.service.SaasUserDetailService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -35,7 +36,7 @@ import java.util.Map;
  * @Author: Waylon
  * @Date: 2019/10/23
  */
-
+@Slf4j
 @Configuration
 @AllArgsConstructor
 @EnableAuthorizationServer
@@ -59,7 +60,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) {
         oauthServer
                 .allowFormAuthenticationForClients()
-                //.tokenKeyAccess("permitAll()")
+                .tokenKeyAccess("permitAll()")
                 .checkTokenAccess("isAuthenticated()");
     }
 
@@ -95,6 +96,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
             additionalInfo.put("username", user.getUsername());
 
             ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
+            log.debug("accessToken:"+accessToken);
             return accessToken;
         };
     }

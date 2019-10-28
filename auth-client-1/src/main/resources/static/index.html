@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>SSO client1</title>
@@ -9,24 +9,52 @@
 <body>
 <h1>SSO taobao Client1</h1>
 <a href="http://sso-tmall:10082/client2/index.html">访问Client2</a>
-<a  href="http://localhost:10080/auth/token/exit">注销</a>
 <a  href="#" onclick="logout()">退出</a>
 </body>
 
-<script type="text/javascript" th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
+<script type="text/javascript" src="/client1/webjars/jquery/2.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="/client1/webjars/jquery-cookie/1.4.1/jquery.cookie.js" th:src="@{/webjars/jquery-cookie/1.4.1/jquery.cookie.js}"></script>
+<!--<script type="text/javascript" src="/client1/webjars/jquery-cookie/1.4.1/webjars-requirejs.js" th:src="@{/webjars/jquery-cookie/1.4.1/webjars-requirejs.js}"></script>-->
 <script type="text/javascript" th:src="@{/webjars/materializecss/0.99.0/js/materialize.min.js}"></script>
-<script type="text/javascript">
-    function logout(){
+<script >
+    $(function(){
+       loadToken();
+       alert($.cookie("JSESSIONID"));
+    });
 
+
+    function loadToken(){
         $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/client1/user",
+            success: function(data){
+                accessToken = data.details.tokenValue;
+                console.log("获取token:"+accessToken);
+                sessionStorage.setItem("Authorization",accessToken);
+            },
+            error: function(){
+                console.log("获取token失败");
+            }
+        });
+    }
+
+
+    function logout(){
+        $.ajax({
+            url: "http://sso-login:10080/auth/token/logout",
             type: "DELETE",
             dataType: "json",
-            url: "http://localhost:10080/auth/token/logout",
+            beforeSend: function(request) {
+                request.setRequestHeader("Authorization", sessionStorage.getItem("Authorization"));
+            },
             success: function(data){
                 console.log("data:"+JSON.stringify(data));
-                if(data.code ==0){
-                    alert(data.msg)
-                }
+                sessionStorage.clear();
+                //$.removeCookie('JSESSIONID',{path:'/'});
+                alert($.cookie('JSESSIONID'));
+
+                //window.location.href = "/client1/index.html";
             },
             error: function(){
                 console.log("注销失败");
