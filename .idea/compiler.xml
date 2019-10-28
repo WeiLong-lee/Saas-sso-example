@@ -7,13 +7,14 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="sso-auth-server" />
-        <module name="auth-client-1" />
-        <module name="pigx-sso-client-demo" />
         <module name="auth-client-2" />
-        <module name="pigx-auth" />
+        <module name="auth-client-1" />
+        <module name="cas-client" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="pigx-auth" target="1.8" />
+      <module name="pigx-sso-client-demo" target="1.8" />
       <module name="saas-common" target="1.8" />
       <module name="saas-common-security" target="1.8" />
       <module name="Saas-sso-example" target="1.8" />
@@ -24,6 +25,7 @@
       <module name="Saas-sso-example" options="" />
       <module name="auth-client-1" options="-parameters" />
       <module name="auth-client-2" options="-parameters" />
+      <module name="cas-client" options="-parameters" />
       <module name="pigx-auth" options="-parameters" />
       <module name="pigx-sso-client-demo" options="-parameters" />
       <module name="saas-common" options="" />

@@ -7,8 +7,7 @@
         <module>sso-auth-server</module>
         <module>auth-client-1</module>
         <module>auth-client-2</module>
-        <module>pigx-auth</module>
-        <module>pigx-sso-client-demo</module>
+        <module>cas-client</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
