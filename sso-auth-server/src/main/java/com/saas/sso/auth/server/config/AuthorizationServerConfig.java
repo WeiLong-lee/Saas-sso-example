@@ -48,24 +48,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-//        SaasClientDetailsService clientDetailsService = new SaasClientDetailsService(dataSource);
-//        clientDetailsService.setSelectClientDetailsSql(SecurityConstants.DEFAULT_SELECT_STATEMENT);
-//        clientDetailsService.setFindClientDetailsSql(SecurityConstants.DEFAULT_FIND_STATEMENT);
-//        clients.withClientDetails(clientDetailsService);
-        clients.inMemory()
-                .withClient("client1")
-                .secret(new BCryptPasswordEncoder().encode("123456"))
-                .authorizedGrantTypes("password","authorization_code", "refresh_token")
-                .redirectUris("http://sso-taobao:10081/client1/login")
-                .scopes("all","read","write")
-                .autoApprove(true)
-                .and()
-                .withClient("client2")
-                .secret(new BCryptPasswordEncoder().encode("client2secrect2"))
-                .authorizedGrantTypes("authorization_code", "refresh_token")
-                .redirectUris("http://sso-tmall:10082/client2/login")
-                .scopes("all","read","write")
-                .autoApprove(true);
+        SaasClientDetailsService clientDetailsService = new SaasClientDetailsService(dataSource);
+        clientDetailsService.setSelectClientDetailsSql(SecurityConstants.DEFAULT_SELECT_STATEMENT);
+        clientDetailsService.setFindClientDetailsSql(SecurityConstants.DEFAULT_FIND_STATEMENT);
+        clients.withClientDetails(clientDetailsService);
 
     }
 
@@ -73,46 +59,45 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) {
         oauthServer
                 .allowFormAuthenticationForClients()
-                .tokenKeyAccess("permitAll()")
+                //.tokenKeyAccess("permitAll()")
                 .checkTokenAccess("isAuthenticated()");
     }
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         endpoints
-                //.allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST)
+                .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST)
                 .tokenStore(tokenStore())
-                //.tokenEnhancer(tokenEnhancer())
+                .tokenEnhancer(tokenEnhancer())
                 .userDetailsService(saasUserDetailService)
-                .authenticationManager(authenticationManager);
-                //.reuseRefreshTokens(false);
+                .authenticationManager(authenticationManager)
+                .reuseRefreshTokens(false);
     }
 
     @Bean
     public TokenStore tokenStore() {
-        // RedisTokenStore tokenStore = new RedisTokenStore(redisConnectionFactory);
-//        tokenStore.setPrefix(SecurityConstants.SAAS_PREFIX + SecurityConstants.OAUTH_PREFIX);
-//        tokenStore.setAuthenticationKeyGenerator(new DefaultAuthenticationKeyGenerator() {
-//            @Override
-//            public String extractKey(OAuth2Authentication authentication) {
-//                return super.extractKey(authentication);
-//            }
-//        });
-       // return tokenStore;
-        return new JdbcTokenStore(dataSource);
+         RedisTokenStore tokenStore = new RedisTokenStore(redisConnectionFactory);
+        tokenStore.setPrefix(SecurityConstants.SAAS_PREFIX + SecurityConstants.OAUTH_PREFIX);
+        tokenStore.setAuthenticationKeyGenerator(new DefaultAuthenticationKeyGenerator() {
+            @Override
+            public String extractKey(OAuth2Authentication authentication) {
+                return super.extractKey(authentication);
+            }
+        });
+        return tokenStore;
     }
 
-//    @Bean
-//    public TokenEnhancer tokenEnhancer() {
-//        return (accessToken, authentication) -> {
-//            final Map<String, Object> additionalInfo = new HashMap<>(8);
-//            User user = (User) authentication.getUserAuthentication().getPrincipal();
-//            additionalInfo.put("username", user.getUsername());
-//
-//            ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
-//            return accessToken;
-//        };
-//    }
+    @Bean
+    public TokenEnhancer tokenEnhancer() {
+        return (accessToken, authentication) -> {
+            final Map<String, Object> additionalInfo = new HashMap<>(8);
+            User user = (User) authentication.getUserAuthentication().getPrincipal();
+            additionalInfo.put("username", user.getUsername());
+
+            ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
+            return accessToken;
+        };
+    }
 
 
 

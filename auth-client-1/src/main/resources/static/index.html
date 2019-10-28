@@ -7,12 +7,33 @@
     <link rel="stylesheet" th:href="@{/webjars/material-design-icons/3.0.1/material-icons.css}"/>
 </head>
 <body>
-<h1>SSO tmall Client1</h1>
-<a href="http://sso-taobao:8084/client2/index.html">访问Client2</a>
-
-<a href="#" onclick="">退出</a>
+<h1>SSO taobao Client1</h1>
+<a href="http://sso-tmall:10082/client2/index.html">访问Client2</a>
+<a  href="http://localhost:10080/auth/token/exit">注销</a>
+<a  href="#" onclick="logout()">退出</a>
 </body>
 
 <script type="text/javascript" th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
 <script type="text/javascript" th:src="@{/webjars/materializecss/0.99.0/js/materialize.min.js}"></script>
+<script type="text/javascript">
+    function logout(){
+
+        $.ajax({
+            type: "DELETE",
+            dataType: "json",
+            url: "http://localhost:10080/auth/token/logout",
+            success: function(data){
+                console.log("data:"+JSON.stringify(data));
+                if(data.code ==0){
+                    alert(data.msg)
+                }
+            },
+            error: function(){
+                console.log("注销失败");
+            }
+        })
+    }
+
+</script>
+
 </html>

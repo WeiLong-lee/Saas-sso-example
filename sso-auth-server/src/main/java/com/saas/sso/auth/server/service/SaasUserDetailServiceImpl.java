@@ -40,7 +40,7 @@ public class SaasUserDetailServiceImpl implements SaasUserDetailService{
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
        UserDetails userDetails = Optional.of(saasUserMapper.selectByUserName(username)).map(saasUser-> new User(saasUser.getUserName(),
-                saasUser.getPassword(),
+                SecurityConstants.BCRYPT + saasUser.getPassword(),
                 AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_ADMIN")
                )).orElseThrow(()-> new UsernameNotFoundException("User" +username + " was not found in the database"));
         return userDetails;

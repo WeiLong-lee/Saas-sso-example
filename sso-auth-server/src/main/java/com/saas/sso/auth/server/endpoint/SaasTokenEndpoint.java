@@ -2,8 +2,10 @@ package com.saas.sso.auth.server.endpoint;
 
 import com.saas.sso.auth.server.domain.R;
 import com.saas.sso.auth.server.service.SaasUserService;
+import com.saas.sso.auth.server.util.CookieUtil;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,7 +34,7 @@ public class SaasTokenEndpoint {
 
     private final TokenStore tokenStore;
     private final RedisTemplate redisTemplate;
-//    private final CacheManager cacheManager;
+    private final CacheManager cacheManager;
 
     private SaasUserService saasUserService;
 
@@ -68,9 +70,15 @@ public class SaasTokenEndpoint {
         return SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
     }
 
-    @GetMapping("/oauth/logout")
+    @GetMapping("/exit")
     public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
         new SecurityContextLogoutHandler().logout(request, null, null);
+         String tokenValue = CookieUtil.getValue(request, "JSESSIONID");
+        OAuth2AccessToken accessToken = tokenStore.readAccessToken(tokenValue);
+        OAuth2Authentication auth2Authentication = tokenStore.readAuthentication(accessToken);
+         cacheManager.getCache("user_details")
+                .evict(auth2Authentication.getName());
+        tokenStore.removeAccessToken(accessToken);
         response.sendRedirect(request.getHeader("referer"));
     }
 
@@ -98,8 +106,8 @@ public class SaasTokenEndpoint {
         }
 
         OAuth2Authentication auth2Authentication = tokenStore.readAuthentication(accessToken);
-//        cacheManager.getCache("user_details")
-//                .evict(auth2Authentication.getName());
+        cacheManager.getCache("user_details")
+                .evict(auth2Authentication.getName());
         tokenStore.removeAccessToken(accessToken);
         return new R<>(Boolean.TRUE);
     }

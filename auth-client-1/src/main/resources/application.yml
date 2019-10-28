@@ -10,10 +10,8 @@ security:
       client-secret: 123456
       access-token-uri: ${auth-server}/oauth/token
       user-authorization-uri: ${auth-server}/oauth/authorize
-      registered-redirect-uri: http://sso-taobao:10081/client1
     resource:
-      user-info-uri: ${auth-server}/token/user
-#      token-info-uri: ${auth-server}/oauth/check_token
+      token-info-uri: ${auth-server}/oauth/check_token
 
 logging:
   level:

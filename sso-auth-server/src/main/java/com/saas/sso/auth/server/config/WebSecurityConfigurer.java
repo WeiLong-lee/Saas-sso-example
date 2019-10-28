@@ -7,6 +7,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,7 +29,7 @@ import org.springframework.web.filter.CorsFilter;
  * @Date: 2019/10/23
  */
 
-//@Primary
+@Primary
 @Order(10)
 @Configuration
 public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
@@ -40,33 +41,22 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http
-//                .formLogin()
-//                .loginPage("/token/login")
-//                .loginProcessingUrl("/token/form")
-//                .and()
-//                .authorizeRequests()
-//                .antMatchers(
-//                        "/login",
-//                        "/token/**",
-//                        "/oauth/**",
-//                        "/**/*.js",
-//                        "/**/*.css",
-//                        "/**/*.jpg",
-//                        "/**/*.png",
-//                        "/**/*.woff2",
-//                        "/actuator/**").permitAll()
-//                .anyRequest().authenticated()
-//                .and().csrf().disable();
-
-        http.csrf().disable()
-                .requestMatchers()
-                .antMatchers("/token/**", "/oauth/authorize")
+        http
+                .formLogin()
+                .loginPage("/token/login")
+                .loginProcessingUrl("/token/form")
                 .and()
                 .authorizeRequests()
+                .antMatchers(
+                        "/token/**",
+                        "/**/*.js",
+                        "/**/*.css",
+                        "/**/*.jpg",
+                        "/**/*.png",
+                        "/**/*.woff2",
+                        "/actuator/**").permitAll()
                 .anyRequest().authenticated()
-                .and()
-                .formLogin().loginPage("/token/login").permitAll();
+                .and().csrf().disable();
     }
 
 
@@ -86,25 +76,21 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(saasUserDetailService);
-    }
 
-    @Bean
-    public FilterRegistrationBean oauthCorsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOrigin("*");
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-        source.registerCorsConfiguration("/**", config);
-        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
-        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        return bean;
-    }
 
+//    @Bean
+//    public FilterRegistrationBean oauthCorsFilter() {
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        CorsConfiguration config = new CorsConfiguration();
+//        config.setAllowCredentials(true);
+//        config.addAllowedOrigin("*");
+//        config.addAllowedHeader("*");
+//        config.addAllowedMethod("*");
+//        source.registerCorsConfiguration("/**", config);
+//        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+//        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+//        return bean;
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

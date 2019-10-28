@@ -1,6 +1,7 @@
 package com.pig4cloud.pigx.auth.service;
 
 
+import com.pig4cloud.pigx.auth.common.constant.SecurityConstants;
 import com.pig4cloud.pigx.auth.mapper.SaasUserMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -41,7 +42,7 @@ public class SaasUserDetailServiceImpl implements SaasUserDetailService{
             return (PigxUser) cache.get(username).get();
         }
        UserDetails userDetails = Optional.of(saasUserMapper.selectByUserName(username)).map(saasUser-> new User(saasUser.getUserName(),
-                saasUser.getPassword(),
+               SecurityConstants.BCRYPT + saasUser.getPassword(),
                 AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_ADMIN")
                )).orElseThrow(()-> new UsernameNotFoundException("User" +username + " was not found in the database"));
         return userDetails;

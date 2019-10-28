@@ -4,7 +4,6 @@ package com.pig4cloud.pigx.auth.config;
 
 import com.pig4cloud.pigx.auth.common.constant.SecurityConstants;
 import com.pig4cloud.pigx.auth.common.util.PigxWebResponseExceptionTranslator;
-import com.pig4cloud.pigx.auth.service.PigxUser;
 import com.pig4cloud.pigx.auth.service.SaasClientDetailsService;
 import com.pig4cloud.pigx.auth.service.SaasUserDetailService;
 import lombok.AllArgsConstructor;
@@ -13,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -88,12 +88,14 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	public TokenEnhancer tokenEnhancer() {
 		return (accessToken, authentication) -> {
 			final Map<String, Object> additionalInfo = new HashMap<>(8);
-			PigxUser pigxUser = (PigxUser) authentication.getUserAuthentication().getPrincipal();
+			/*PigxUser pigxUser = (PigxUser) authentication.getUserAuthentication().getPrincipal();
 			additionalInfo.put("user_id", pigxUser.getId());
 			additionalInfo.put("username", pigxUser.getUsername());
 			additionalInfo.put("dept_id", pigxUser.getDeptId());
 			additionalInfo.put("tenant_id", pigxUser.getTenantId());
-			additionalInfo.put("license", SecurityConstants.PIGX_LICENSE);
+			additionalInfo.put("license", SecurityConstants.PIGX_LICENSE);*/
+			User user = (User) authentication.getUserAuthentication().getPrincipal();
+			additionalInfo.put("username", user.getUsername());
 			((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
 			return accessToken;
 		};

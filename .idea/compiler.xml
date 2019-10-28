@@ -7,10 +7,10 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="sso-auth-server" />
-        <module name="pigx-sso-client-demo" />
-        <module name="pigx-auth" />
-        <module name="auth-client-2" />
         <module name="auth-client-1" />
+        <module name="pigx-sso-client-demo" />
+        <module name="auth-client-2" />
+        <module name="pigx-auth" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
