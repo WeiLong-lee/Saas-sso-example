@@ -17,7 +17,7 @@ spring:
         min-idle: 0
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/saas_sso?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowMultiQueries=true&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://127.0.0.1:13306/saas_sso?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowMultiQueries=true&allowPublicKeyRetrieval=true
     username: root
     password: 123456
 
@@ -39,7 +39,3 @@ spring:
 # 日志
 logging:
   config: classpath:log4j2.xml
-
-# 允许跨域的地址
-allow:
-  origins: http://sso-taobao:10081,http://sso-login:10080/auth,http://localhost:8080,http://localhost:3001

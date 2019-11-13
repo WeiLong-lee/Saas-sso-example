@@ -1,0 +1,10 @@
+###  前端根据密码方式登录 获取 token
+POST {{host-sso}}:{{port}}/cas/v1/tickets
+Content-Type: Application/x-www-form-urlencoded
+
+{
+     username: "admin",
+     password: "admin"
+}
+
+###

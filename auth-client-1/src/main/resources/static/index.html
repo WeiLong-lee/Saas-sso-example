@@ -9,6 +9,7 @@
 <body>
 <h1>SSO taobao Client1</h1>
 <a href="http://sso-tmall:10082/client2/index.html">访问Client2</a>
+<a href="http://www.baidu.com">百度</a>
 <a  href="#" onclick="logout()">退出</a>
 </body>
 
@@ -18,8 +19,7 @@
 <script type="text/javascript" th:src="@{/webjars/materializecss/0.99.0/js/materialize.min.js}"></script>
 <script >
     $(function(){
-       loadToken();
-       alert($.cookie("JSESSIONID"));
+       //loadToken();
     });
 
 
@@ -42,18 +42,14 @@
 
     function logout(){
         $.ajax({
-            url: "http://sso-login:10080/auth/token/logout",
-            type: "DELETE",
+            url: "/client1/exit",
+            type: "POST",
             dataType: "json",
-            beforeSend: function(request) {
-                request.setRequestHeader("Authorization", sessionStorage.getItem("Authorization"));
-            },
             success: function(data){
                 console.log("data:"+JSON.stringify(data));
-                sessionStorage.clear();
-                //$.removeCookie('JSESSIONID',{path:'/'});
-                alert($.cookie('JSESSIONID'));
 
+                //$.removeCookie('JSESSIONID',{path:'/client1'});
+                //$.cookie("JSESSIONID",'',{expires:-1,path:'/client1'})
                 //window.location.href = "/client1/index.html";
             },
             error: function(){

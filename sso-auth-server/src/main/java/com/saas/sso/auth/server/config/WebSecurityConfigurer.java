@@ -3,6 +3,7 @@ package com.saas.sso.auth.server.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.saas.sso.auth.server.service.SaasUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,21 +25,20 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.List;
+
 /**
  * @Description: 认证相关配置
  * @Author: Waylon
  * @Date: 2019/10/23
  */
-
 @Primary
 @Order(10)
 @Configuration
 public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
-
-
-    @Autowired
-    private SaasUserDetailService saasUserDetailService;
+    @Value("#{'${allow.origins}'.split(',')}")
+    private List<String> allowOrigins;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -49,6 +50,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(
                         "/token/**",
+                        "/oauth/**",
                         "/**/*.js",
                         "/**/*.css",
                         "/**/*.jpg",
@@ -56,7 +58,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                         "/**/*.woff2",
                         "/actuator/**").permitAll()
                 .anyRequest().authenticated()
-                .and().csrf().disable();
+                .and().csrf().disable();  // 关闭csrf 防护
     }
 
 
@@ -83,13 +85,16 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("*");
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
+        for (String allowOrigin: allowOrigins){
+            config.addAllowedOrigin(allowOrigin);
+        }
+        config.addAllowedHeader(CorsConfiguration.ALL);
+        config.addAllowedMethod(CorsConfiguration.ALL);
         source.registerCorsConfiguration("/**", config);
         FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return bean;
+        //return new CorsFilter(source);
     }
 
     @Bean

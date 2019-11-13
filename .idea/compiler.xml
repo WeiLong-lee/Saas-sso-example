@@ -2,21 +2,21 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="sso-auth-server" />
-        <module name="auth-client-2" />
+        <module name="cas-client-2" />
+        <module name="cas-client-1" />
         <module name="auth-client-1" />
-        <module name="cas-client" />
+        <module name="auth-client-2" />
+        <module name="cas-server" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="pigx-auth" target="1.8" />
-      <module name="pigx-sso-client-demo" target="1.8" />
-      <module name="saas-common" target="1.8" />
-      <module name="saas-common-security" target="1.8" />
+      <module name="cas-server-base" target="11" />
       <module name="Saas-sso-example" target="1.8" />
     </bytecodeTargetLevel>
   </component>
@@ -25,11 +25,9 @@
       <module name="Saas-sso-example" options="" />
       <module name="auth-client-1" options="-parameters" />
       <module name="auth-client-2" options="-parameters" />
-      <module name="cas-client" options="-parameters" />
-      <module name="pigx-auth" options="-parameters" />
-      <module name="pigx-sso-client-demo" options="-parameters" />
-      <module name="saas-common" options="" />
-      <module name="saas-common-security" options="-parameters" />
+      <module name="cas-client-1" options="-parameters" />
+      <module name="cas-client-2" options="-parameters" />
+      <module name="cas-server" options="" />
       <module name="sso-auth-server" options="-parameters" />
     </option>
   </component>

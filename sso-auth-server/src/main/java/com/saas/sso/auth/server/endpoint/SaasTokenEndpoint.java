@@ -75,7 +75,7 @@ public class SaasTokenEndpoint {
      *
      * @param authHeader Authorization
      */
-    @DeleteMapping("/logout")
+    @PostMapping("/logout")
     public R logout(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader) {
         if (StringUtils.isBlank(authHeader)) {
             return R.builder()
