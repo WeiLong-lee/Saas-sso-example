@@ -18,6 +18,7 @@ public class SaasUserService {
 
     @Autowired
     private SaasUserMapper saasUserMapper;
+
     @Autowired
     private PasswordEncoder ENCODER = new BCryptPasswordEncoder();
 

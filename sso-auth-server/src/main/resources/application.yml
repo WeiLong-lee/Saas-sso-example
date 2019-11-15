@@ -7,8 +7,10 @@ spring:
     name: sso-auth-server
   redis:
     database: 0
-    host: 127.0.0.1
-    port: 6379
+#    host: 127.0.0.1
+#    port: 6379
+    host: 10.3.0.79
+    port: 7001
     password:
     jedis:
       pool:
@@ -19,7 +21,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/saas_sso?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowMultiQueries=true&allowPublicKeyRetrieval=true
     username: root
-    password: 123456
+    password: root
 
   freemarker:
     allow-request-override: false
@@ -42,4 +44,4 @@ logging:
 
 # 允许跨域的地址
 allow:
-  origins: http://sso-taobao:10081,http://sso-login:10080/auth,http://localhost:8080,http://localhost:3001
+  origins: http://sso-taobao:10081,http://sso-login:10080/auth,http://localhost:8080,http://localhost:3001,http://sso-tmall:10082
