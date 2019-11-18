@@ -1,6 +1,6 @@
 ###  前端根据密码方式登录 获取 token
 POST {{host-sso}}:{{port}}/auth/oauth/token?grant_type=password&username ={{username}}&password={{password}}&scope={{scope}}
-Content-Type: application/json
+Content-Type: application/x-www-form-urlencoded
 Accept: application/json
 Cache-Control: no-cache
 Authorization: Basic Y2xpZW50MToxMjM0NTY=
@@ -47,7 +47,7 @@ Authorization: Bearer {{token}}
 
 ### 退出登录
 
-DELETE {{host-sso}}:{{port}}/auth/token/logout
+DELETE {{host-sso}}:{{port}}/auth/token/{{token}}
 Content-Type: application/json
 Accept: application/json
 Cache-Control: no-cache
