@@ -44,6 +44,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private final SaasUserDetailService saasUserDetailService;
     private final AuthenticationManager authenticationManager;
     private final RedisConnectionFactory redisConnectionFactory;
+    private final RedisAuthorizationCodeServices redisAuthorizationCodeServices;
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -57,7 +58,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) {
         oauthServer
-                .allowFormAuthenticationForClients()
+                .allowFormAuthenticationForClients()// 允许录入client_id和client_secret的形式
                 .tokenKeyAccess("permitAll()")
                 .checkTokenAccess("isAuthenticated()");
     }
@@ -70,7 +71,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .tokenEnhancer(tokenEnhancer())
                 .userDetailsService(saasUserDetailService)
                 .authenticationManager(authenticationManager)
-                .reuseRefreshTokens(false);
+                .reuseRefreshTokens(false)
+
+                .authorizationCodeServices(redisAuthorizationCodeServices);
     }
 
     @Bean

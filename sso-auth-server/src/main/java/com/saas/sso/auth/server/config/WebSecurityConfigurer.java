@@ -39,11 +39,12 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .loginPage("/token/login")
                 // /token/form与登录页面的表单提交uri一致
                 .loginProcessingUrl("/token/form")
+                .successHandler(new MyAuthenticationSuccessHandler())
                 .and()
                 .authorizeRequests()
                 .antMatchers(
                         "/token/**",
-                        "/oauth/**",
+                        // "/oauth/**",
                         "/**/*.js",
                         "/**/*.css",
                         "/**/*.jpg",
