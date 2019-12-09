@@ -1,8 +1,12 @@
 package com.saas.sso.auth.server.config;
 
+import com.alibaba.fastjson.JSONObject;
+import com.saas.sso.auth.server.domain.auth.log.Oauth2AuthorizationCodeGrantRecordLog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisStringCommands;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -21,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2019/12/02
  */
 @Component
-@Slf4j
+@Slf4j(topic = "sso_auth_log")
 public class RedisAuthorizationCodeServices extends RandomValueAuthorizationCodeServices {
 
     @Value("#{'${oauth2.code.redis.prefix}'}")
@@ -37,24 +41,40 @@ public class RedisAuthorizationCodeServices extends RandomValueAuthorizationCode
      */
     @Override
     protected void store(String code, OAuth2Authentication authentication) {
-        redisTemplate.execute((RedisCallback<Long>) connection -> {
-            connection.set(codeKey(code).getBytes(), SerializationUtils.serialize(authentication),
-                    Expiration.from(15, TimeUnit.SECONDS), RedisStringCommands.SetOption.UPSERT);
-            return 1L;
+        Boolean setResult = redisTemplate.execute(new RedisCallback<Boolean>() {
+            @Override
+            public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
+                return connection.set(RedisAuthorizationCodeServices.this.codeKey(code).getBytes(), SerializationUtils.serialize(authentication),
+                        Expiration.from(15, TimeUnit.SECONDS), RedisStringCommands.SetOption.UPSERT);
+            }
         });
-        log.debug("Store Authorization_Code:'{}' for user:'{}' from client:'{}'", code, authentication.getName(), authentication.getOAuth2Request().getClientId());
+
+        if (setResult == null || !setResult) {
+
+            log.error("{\"message\":\"Redis Set Operation failure : Can't Store Authorization_Code:'{}' for user:'{}' from client:'{}' into Redis\"}", code, authentication.getName(), authentication.getOAuth2Request().getClientId());
+            throw new RuntimeException("Redis Set Operation failure : Can't Store Authorization_Code into Redis");
+        } else {
+            log.info(JSONObject.toJSONString(new Oauth2AuthorizationCodeGrantRecordLog(authentication.getName(), authentication.getOAuth2Request().getClientId(), code)));
+            // log.info("{\"message\":\"Store Authorization_Code:'{}' for user:'{}' from client:'{}' into Redis\"}", code, authentication.getName(), authentication.getOAuth2Request().getClientId());
+        }
     }
 
     @Override
     protected OAuth2Authentication remove(final String code) {
-        OAuth2Authentication oAuth2Authentication = redisTemplate.execute((RedisCallback<OAuth2Authentication>) connection -> {
-            byte[] keyByte = codeKey(code).getBytes();
-            byte[] valueByte = connection.get(keyByte);
-            if (valueByte != null) {
-                connection.del(keyByte);
-                return (OAuth2Authentication) SerializationUtils.deserialize(valueByte);
+        OAuth2Authentication oAuth2Authentication = redisTemplate.execute(new RedisCallback<OAuth2Authentication>() {
+            @Override
+            public OAuth2Authentication doInRedis(RedisConnection connection) throws DataAccessException {
+                byte[] keyByte = RedisAuthorizationCodeServices.this.codeKey(code).getBytes();
+                byte[] valueByte = connection.get(keyByte);
+                if (valueByte != null) {
+                    OAuth2Authentication oAuth2Authentication = (OAuth2Authentication) SerializationUtils.deserialize(valueByte);
+                    connection.del(keyByte);
+                    return oAuth2Authentication;
+                } else {
+                    log.error("{\"message\":\"No OAuth2Authentication info found in Redis for Authorization_Code:{}\"}", code);
+                    return null;
+                }
             }
-            return null;
         });
         return oAuth2Authentication;
     }

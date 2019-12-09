@@ -3,9 +3,6 @@ package com.saas.sso.auth.server.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.saas.sso.auth.server.domain.SaasUser;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Component;
 
 /**
  * @Description:

@@ -5,7 +5,8 @@ server:
 spring:
   session:
     store-type: redis
-    timeout: 3600s
+    # never timeout
+    timeout: -1
     redis:
       namespace: saas:auth:spring:session
       flush-mode: on_save
@@ -25,9 +26,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/saas_sso?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowMultiQueries=true&allowPublicKeyRetrieval=true
     username: root
-    password: root
-#    password: abc123
-
+    password: a
   freemarker:
     allow-request-override: false
     allow-session-override: false
@@ -42,12 +41,10 @@ spring:
     prefer-file-system-access: true
     suffix: .ftl
     template-loader-path: classpath:/templates/
-
-# 日志
 logging:
-  level:
-    com.example.sso.auth.client: debug
-    org.springframework.security: debug
+#  level:
+#    com.example.sso.auth.client: debug
+#    org.springframework.security: debug
   config: classpath:log4j2.xml
 
 # 允许跨域的地址

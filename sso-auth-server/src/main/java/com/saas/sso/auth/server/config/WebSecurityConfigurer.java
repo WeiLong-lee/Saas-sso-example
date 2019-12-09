@@ -1,5 +1,7 @@
 package com.saas.sso.auth.server.config;
 
+import com.saas.sso.auth.server.constant.SecurityConstants;
+import com.saas.sso.auth.server.handler.SaasSSOAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -38,8 +40,8 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/token/login")
                 // /token/form与登录页面的表单提交uri一致
-                .loginProcessingUrl("/token/form")
-                .successHandler(new MyAuthenticationSuccessHandler())
+                .loginProcessingUrl(SecurityConstants.LOGIN_PROCESSING_URL)
+                .successHandler(new SaasSSOAuthenticationSuccessHandler())
                 .and()
                 .authorizeRequests()
                 .antMatchers(

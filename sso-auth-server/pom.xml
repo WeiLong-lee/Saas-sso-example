@@ -103,6 +103,13 @@
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
 
+        <!-- For Log4j2 KafkaAppender -->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+
         <!--session-redis-->
         <dependency>
             <groupId>org.springframework.session</groupId>
