@@ -42,14 +42,14 @@ spring:
     suffix: .ftl
     template-loader-path: classpath:/templates/
 logging:
-#  level:
+  level:
 #    com.example.sso.auth.client: debug
-#    org.springframework.security: debug
+    org.springframework.security: debug
   config: classpath:log4j2.xml
 
 # 允许跨域的地址
 allow:
-  origins: http://sso-taobao:10081,http://sso-login:10080/auth,http://localhost:8080,http://localhost:3001,http://localhost:3000,http://sso-tmall:10082
+  origins: http://localhost:10081,http://localhost:3000
 oauth2:
   code:
     redis:

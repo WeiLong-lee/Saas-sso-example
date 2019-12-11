@@ -11,10 +11,10 @@ import org.springframework.cache.annotation.EnableCaching;
 @EnableCaching
 @SpringBootApplication
 @MapperScan("com.saas.sso.auth.server.mapper")
-public class SsoAuthServerApplication {
+public class SSOAuthServerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SsoAuthServerApplication.class, args);
+        SpringApplication.run(SSOAuthServerApplication.class, args);
     }
 
 

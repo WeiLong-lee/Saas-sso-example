@@ -11,7 +11,7 @@
         <Console name="console" target="SYSTEM_OUT" follow="true"/>
     </Appenders>
     <Loggers>
-        <Root level="info" includeLocation="false">
+        <Root level="debug" includeLocation="false">
             <AppenderRef ref="kafkaLog"/>
             <AppenderRef ref="console"/>
         </Root>

@@ -10,6 +10,7 @@
         <module>cas-server</module>
         <module>cas-client-1</module>
         <module>cas-client-2</module>
+        <module>sso-auth-resource-1</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

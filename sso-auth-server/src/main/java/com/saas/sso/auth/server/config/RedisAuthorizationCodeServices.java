@@ -61,6 +61,7 @@ public class RedisAuthorizationCodeServices extends RandomValueAuthorizationCode
 
     @Override
     protected OAuth2Authentication remove(final String code) {
+        // todo 第一次记录 code对应的OAuth2Authentication，若重复消费code，则撤销之前颁发的token？
         OAuth2Authentication oAuth2Authentication = redisTemplate.execute(new RedisCallback<OAuth2Authentication>() {
             @Override
             public OAuth2Authentication doInRedis(RedisConnection connection) throws DataAccessException {

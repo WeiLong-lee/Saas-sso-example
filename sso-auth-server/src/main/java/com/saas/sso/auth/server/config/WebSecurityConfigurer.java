@@ -47,6 +47,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers(
                         "/token/**",
                         // "/oauth/**",
+                        // "/error",
                         "/**/*.js",
                         "/**/*.css",
                         "/**/*.jpg",
