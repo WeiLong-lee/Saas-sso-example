@@ -1,8 +1,9 @@
 package com.saas.sso.auth.resource.configuration;
 
+import com.saas.sso.auth.resource.security.filter.SSOCRSFTokenCheckFilter;
 import com.saas.sso.auth.resource.security.filter.SSOCodeCheckFilter;
-import com.saas.sso.auth.resource.security.filter.SSOTokenCheckFilter;
-import com.saas.sso.auth.resource.security.token.SSOTokenInspector;
+import com.saas.sso.auth.resource.security.filter.SSOOauthTokenCheckFilter;
+import com.saas.sso.auth.resource.security.oauth.token.SSOTokenInspector;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -62,14 +63,26 @@ public class SSOFilterConfiguration {
     }
 
     /**
+     * CSRF Token校验Filter
+     */
+    @Bean
+    public FilterRegistrationBean<SSOCRSFTokenCheckFilter> SSOCRSFTokenCheckFilter() {
+        FilterRegistrationBean<SSOCRSFTokenCheckFilter> filter = new FilterRegistrationBean<>();
+        filter.setName("SSOCRSFTokenCheckFilter");
+        filter.setFilter(new SSOCRSFTokenCheckFilter());
+        filter.setOrder(20);
+        return filter;
+    }
+
+    /**
      * token校验Filter
      */
     @Bean
-    public FilterRegistrationBean<SSOTokenCheckFilter> SSOTokenCheckFilter(SSOTokenInspector tokenInspector) {
-        FilterRegistrationBean<SSOTokenCheckFilter> filter = new FilterRegistrationBean<>();
+    public FilterRegistrationBean<SSOOauthTokenCheckFilter> SSOTokenCheckFilter(SSOTokenInspector tokenInspector) {
+        FilterRegistrationBean<SSOOauthTokenCheckFilter> filter = new FilterRegistrationBean<>();
         filter.setName("SSOTokenCheckFilter");
-        filter.setFilter(new SSOTokenCheckFilter(tokenInspector));
-        filter.setOrder(20);
+        filter.setFilter(new SSOOauthTokenCheckFilter(tokenInspector));
+        filter.setOrder(30);
         return filter;
     }
 

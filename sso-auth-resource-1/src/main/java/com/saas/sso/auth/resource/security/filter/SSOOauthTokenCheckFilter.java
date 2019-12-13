@@ -1,6 +1,7 @@
 package com.saas.sso.auth.resource.security.filter;
 
-import com.saas.sso.auth.resource.security.token.SSOTokenInspector;
+import com.saas.sso.auth.resource.security.constant.SecurityConstants;
+import com.saas.sso.auth.resource.security.oauth.token.SSOTokenInspector;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.*;
@@ -9,17 +10,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * token校验Filter
+ * oauth2 token校验Filter
  *
  * @author feng
  * @date 2019/12/11
  */
 @Slf4j
-public class SSOTokenCheckFilter implements Filter {
+public class SSOOauthTokenCheckFilter implements Filter {
 
     private SSOTokenInspector tokenInspector;
 
-    public SSOTokenCheckFilter(SSOTokenInspector tokenInspector) {
+    public SSOOauthTokenCheckFilter(SSOTokenInspector tokenInspector) {
         this.tokenInspector = tokenInspector;
     }
 
@@ -32,9 +33,14 @@ public class SSOTokenCheckFilter implements Filter {
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
+        String uri = request.getRequestURI();
         boolean validToken = false;
 
-        validToken = tokenInspector.inspect(request);
+        if (SecurityConstants.SSO_LOGOUT_URI_FULL.equals(uri)) {
+            validToken = true;
+        } else {
+            validToken = tokenInspector.inspect(request);
+        }
         // TODO
         // try {
         //     validToken = tokenInspector.inspect(request);

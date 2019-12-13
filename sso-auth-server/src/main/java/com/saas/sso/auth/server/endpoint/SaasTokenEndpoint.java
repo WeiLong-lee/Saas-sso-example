@@ -3,6 +3,7 @@ package com.saas.sso.auth.server.endpoint;
 import com.saas.sso.auth.server.domain.R;
 import com.saas.sso.auth.server.service.SaasUserService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,9 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 
 
 /**
@@ -26,6 +25,7 @@ import java.io.IOException;
  * @Author: Waylon
  * @Date: 2019/10/23
  */
+@Slf4j
 @RestController
 @AllArgsConstructor
 @RequestMapping("/token")
@@ -115,21 +115,24 @@ public class SaasTokenEndpoint {
 
     /**
      * 退出登录
+     *
      * @param request
-     * @param response
-     * @param callbackUrl
      * @param token
      */
     @GetMapping("/exit")
-    public void logout(HttpServletRequest request, HttpServletResponse response,
-                       String callbackUrl, String token) {
-        HttpSession session = request.getSession();
-        ((RedisTokenStore)tokenStore).removeAccessToken(token);
-        session.invalidate();
+    public R<Boolean> exit(HttpServletRequest request, String token) {
         try {
-            response.sendRedirect(callbackUrl + "?callback=1&logout=1");
-        } catch (IOException e) {
-            e.printStackTrace();
+            HttpSession session = request.getSession(false);
+            ((RedisTokenStore) tokenStore).removeAccessToken(token);
+            if (null != session) {
+                session.invalidate();
+            } else {
+                log.info("null session logout,token:{}", token);
+            }
+            return new R<>(Boolean.TRUE);
+        } catch (Exception e) {
+            log.error("登出错误:{}", e.getMessage());
+            return new R<>(Boolean.FALSE).setMsg(e.getMessage());
         }
     }
 

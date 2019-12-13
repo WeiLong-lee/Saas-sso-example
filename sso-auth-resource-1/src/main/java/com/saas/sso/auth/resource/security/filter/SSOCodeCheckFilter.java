@@ -1,5 +1,6 @@
 package com.saas.sso.auth.resource.security.filter;
 
+import com.saas.sso.auth.resource.security.constant.SecurityConstants;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.util.StringUtils;
 
@@ -18,7 +19,7 @@ public class SSOCodeCheckFilter implements Filter {
 
     private static final String SSO_CODE = "abc123";
 
-    private static final String SSO_CODE_URI = "/resource/sso/check";
+    private static final String SSO_DYNAMIC_SECRET_NAME = "SaasDynamicSecret";
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -31,7 +32,7 @@ public class SSOCodeCheckFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) res;
         boolean authenticated = false;
         String uri = request.getRequestURI();
-        String ssoCode = request.getHeader("ssoCode");
+        String ssoCode = request.getHeader(SSO_DYNAMIC_SECRET_NAME);
 
         // 验证session是否合法
         if (request.getSession(false) != null) {
@@ -42,7 +43,7 @@ public class SSOCodeCheckFilter implements Filter {
         }
 
         // session不合法时，验证是否申请校验SSO_CODE的请求
-        if (!authenticated && SSO_CODE_URI.equals(uri) && !StringUtils.isEmpty(ssoCode)) {
+        if (!authenticated && SecurityConstants.SSO_GET_CRSF_TOKEN_FULL_URI.equals(uri) && !StringUtils.isEmpty(ssoCode)) {
             // TODO 修改SSO_CODE的获取来源
             if (SSO_CODE.equals(ssoCode)) {
                 authenticated = true;
