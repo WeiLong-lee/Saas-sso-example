@@ -68,9 +68,10 @@ CREATE TABLE `oauth_client_details` (
 -- Records of oauth_client_details
 -- ----------------------------
 BEGIN;
-INSERT INTO `oauth_client_details` VALUES ('client1', NULL, '123456', 'server', 'password,refresh_token,authorization_code', 'http://sso-taobao:10081/client1/login', '', NULL, NULL, NULL, 'true');
-INSERT INTO `oauth_client_details` VALUES ('client2', NULL, '123456', 'server', 'password,refresh_token,authorization_code', 'http://sso-tmall:10082/client2/login', '', NULL, NULL, NULL, 'true');
-INSERT INTO `oauth_client_details` VALUES ('pig', NULL, 'pig', 'server', 'password,refresh_token,authorization_code', 'http://localhost:3001/login,http://localhost:4041/sso1/login', NULL, NULL, NULL, NULL, 'true');
+INSERT INTO `oauth_client_details`(`client_id`, `resource_ids`, `client_secret`, `scope`, `authorized_grant_types`, `web_server_redirect_uri`, `authorities`, `access_token_validity`, `refresh_token_validity`, `additional_information`, `autoapprove`) VALUES ('client1', NULL, '123456', 'server', 'password,refresh_token,authorization_code', 'http://sso-taobao:10081/client1/login', '', NULL, NULL, NULL, 'true');
+INSERT INTO `oauth_client_details`(`client_id`, `resource_ids`, `client_secret`, `scope`, `authorized_grant_types`, `web_server_redirect_uri`, `authorities`, `access_token_validity`, `refresh_token_validity`, `additional_information`, `autoapprove`) VALUES ('client2', NULL, '123456', 'server', 'password,refresh_token,authorization_code', 'http://sso-tmall:10082/client2/login', '', NULL, NULL, NULL, 'true');
+INSERT INTO `oauth_client_details`(`client_id`, `resource_ids`, `client_secret`, `scope`, `authorized_grant_types`, `web_server_redirect_uri`, `authorities`, `access_token_validity`, `refresh_token_validity`, `additional_information`, `autoapprove`) VALUES ('pig', NULL, 'pig', 'server', 'password,refresh_token,authorization_code', 'http://localhost:3001/login,http://localhost:4041/sso1/login', NULL, NULL, NULL, NULL, 'true');
+INSERT INTO `oauth_client_details`(`client_id`, `resource_ids`, `client_secret`, `scope`, `authorized_grant_types`, `web_server_redirect_uri`, `authorities`, `access_token_validity`, `refresh_token_validity`, `additional_information`, `autoapprove`) VALUES ('sso-a', NULL, '123456', 'server', 'password,refresh_token,authorization_code', 'http://localhost:3000/oauth_callback', '', NULL, NULL, NULL, 'true');
 COMMIT;
 
 -- ----------------------------

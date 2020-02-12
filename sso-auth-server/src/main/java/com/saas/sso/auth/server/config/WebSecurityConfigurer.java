@@ -1,26 +1,20 @@
 package com.saas.sso.auth.server.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.saas.sso.auth.server.service.SaasUserDetailService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.saas.sso.auth.server.constant.SecurityConstants;
+import com.saas.sso.auth.server.handler.SaasSSOAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
-import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -45,12 +39,15 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
         http
                 .formLogin()
                 .loginPage("/token/login")
-                .loginProcessingUrl("/token/form")
+                // /token/form与登录页面的表单提交uri一致
+                .loginProcessingUrl(SecurityConstants.LOGIN_PROCESSING_URL)
+                .successHandler(new SaasSSOAuthenticationSuccessHandler())
                 .and()
                 .authorizeRequests()
                 .antMatchers(
                         "/token/**",
-                        "/oauth/**",
+                        // "/oauth/**",
+                        // "/error",
                         "/**/*.js",
                         "/**/*.css",
                         "/**/*.jpg",
@@ -78,14 +75,12 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-
-
     @Bean
     public FilterRegistrationBean oauthCorsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        for (String allowOrigin: allowOrigins){
+        for (String allowOrigin : allowOrigins) {
             config.addAllowedOrigin(allowOrigin);
         }
         config.addAllowedHeader(CorsConfiguration.ALL);

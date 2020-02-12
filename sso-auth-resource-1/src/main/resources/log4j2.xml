@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+<!--        <Kafka name="kafkaLog" topic="kafka-logstash-topic" ignoreExceptions="false">-->
+<!--            <JsonLayout compact="true" eventEol="true" locationInfo="false">-->
+<!--                <KeyValuePair key="logdate" value="$${date:yyyy-MM-dd HH:mm:ss.SSS}"/>-->
+<!--            </JsonLayout>-->
+<!--            <Property name="bootstrap.servers">10.3.0.82:9092</Property>-->
+<!--        </Kafka>-->
+
+        <Console name="console" target="SYSTEM_OUT" follow="true"/>
+    </Appenders>
+    <Loggers>
+        <Root level="debug" includeLocation="false">
+            <AppenderRef ref="kafkaLog"/>
+            <AppenderRef ref="console"/>
+        </Root>
+        <!-- avoid recursive logging -->
+<!--        <Logger name="org.apache.kafka" level="INFO" />-->
+    </Loggers>
+</Configuration>

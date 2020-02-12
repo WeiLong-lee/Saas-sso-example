@@ -45,6 +45,11 @@ public interface SecurityConstants {
     String FROM = "from";
 
     /**
+     * 登录表单提交uri
+     */
+    String LOGIN_PROCESSING_URL = "/token/form";
+
+    /**
      * OAUTH URL
      */
     String OAUTH_TOKEN_URL = "/oauth/token";

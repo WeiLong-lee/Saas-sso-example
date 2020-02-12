@@ -3,11 +3,18 @@ server:
   servlet:
     context-path: /auth
 spring:
+  session:
+    store-type: redis
+    # never timeout
+    timeout: -1
+    redis:
+      namespace: saas:auth:spring:session
+      flush-mode: on_save
   application:
     name: sso-auth-server
   redis:
     database: 0
-    host: 127.0.0.1
+    host: 10.3.0.79
     port: 6379
     password:
     jedis:
@@ -19,8 +26,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/saas_sso?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowMultiQueries=true&allowPublicKeyRetrieval=true
     username: root
-    password: 123456
-
+    password: a
   freemarker:
     allow-request-override: false
     allow-session-override: false
@@ -35,11 +41,16 @@ spring:
     prefer-file-system-access: true
     suffix: .ftl
     template-loader-path: classpath:/templates/
-
-# 日志
 logging:
+  level:
+#    com.example.sso.auth.client: debug
+    org.springframework.security: debug
   config: classpath:log4j2.xml
 
 # 允许跨域的地址
 allow:
-  origins: http://sso-taobao:10081,http://sso-login:10080/auth,http://localhost:8080,http://localhost:3001
+  origins: http://localhost:10081,http://localhost:3000
+oauth2:
+  code:
+    redis:
+      prefix: saas:auth:oauth2:code

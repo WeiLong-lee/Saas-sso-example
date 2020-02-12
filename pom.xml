@@ -10,6 +10,7 @@
         <module>cas-server</module>
         <module>cas-client-1</module>
         <module>cas-client-2</module>
+        <module>sso-auth-resource-1</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -39,6 +40,7 @@
         <hutool.version>4.3.2</hutool.version>
         <cas.version>6.0.5</cas.version>
         <springboot.version>2.2.0.RELEASE</springboot.version>
+        <session-redis.version>2.2.0.RELEASE</session-redis.version>
         <!-- app.server could be -jetty, -undertow, -tomcat, or blank if you plan to provide appserver -->
         <app.server>-tomcat</app.server>
         <maven.compiler.source>11</maven.compiler.source>

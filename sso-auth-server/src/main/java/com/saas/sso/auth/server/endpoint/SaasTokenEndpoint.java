@@ -2,8 +2,8 @@ package com.saas.sso.auth.server.endpoint;
 
 import com.saas.sso.auth.server.domain.R;
 import com.saas.sso.auth.server.service.SaasUserService;
-import com.saas.sso.auth.server.util.CookieUtil;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -12,13 +12,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.servlet.http.HttpSession;
 
 
 /**
@@ -26,6 +25,7 @@ import java.io.IOException;
  * @Author: Waylon
  * @Date: 2019/10/23
  */
+@Slf4j
 @RestController
 @AllArgsConstructor
 @RequestMapping("/token")
@@ -44,14 +44,14 @@ public class SaasTokenEndpoint {
     }
 
     @PostMapping("/register/user")
-    public R registerUser(@RequestParam(value = "username",required = true) String userName,
-                                     @RequestParam(value = "password",required = true) String password) {
+    public R registerUser(@RequestParam(value = "username", required = true) String userName,
+                          @RequestParam(value = "password", required = true) String password) {
 
-        int result = saasUserService.saveUser(userName,password);
-        if(result == 0){
-            R.builder().code(1) .data(Boolean.FALSE).msg("注册失败").build();
+        int result = saasUserService.saveUser(userName, password);
+        if (result == 0) {
+            R.builder().code(1).data(Boolean.FALSE).msg("注册失败").build();
         }
-        return R.builder().code(0) .data(Boolean.TRUE).msg("注册成功").build();
+        return R.builder().code(0).data(Boolean.TRUE).msg("注册成功").build();
     }
 
     /**
@@ -66,7 +66,7 @@ public class SaasTokenEndpoint {
 
     @GetMapping("/user")
     @ResponseBody
-    public String getCurrentUser(){
+    public String getCurrentUser() {
         return SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
     }
 
@@ -113,7 +113,27 @@ public class SaasTokenEndpoint {
         return new R<>();
     }
 
-
-
+    /**
+     * 退出登录
+     *
+     * @param request
+     * @param token
+     */
+    @GetMapping("/exit")
+    public R<Boolean> exit(HttpServletRequest request, String token) {
+        try {
+            HttpSession session = request.getSession(false);
+            ((RedisTokenStore) tokenStore).removeAccessToken(token);
+            if (null != session) {
+                session.invalidate();
+            } else {
+                log.info("null session logout,token:{}", token);
+            }
+            return new R<>(Boolean.TRUE);
+        } catch (Exception e) {
+            log.error("登出错误:{}", e.getMessage());
+            return new R<>(Boolean.FALSE).setMsg(e.getMessage());
+        }
+    }
 
 }

@@ -1,0 +1,20 @@
+server:
+  port: 10081
+  servlet:
+    context-path: /resource
+spring:
+  application:
+    name: sso-resource-server
+
+
+
+# 自定义参数
+custom:
+  #  variable:
+  #  starter:
+  properties:
+    auth:
+      sso-auth-server-url: http://localhost:10080/auth/oauth/check_token
+      client-id: client1
+      client-secret: 123456
+    allow-origins: http://localhost:3000,http://localhost:3001

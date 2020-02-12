@@ -10,9 +10,11 @@ security:
       client-secret: 123456
       access-token-uri: ${auth-server}/oauth/token
       user-authorization-uri: ${auth-server}/oauth/authorize
+#      registered-redirect-uri: http://www.baidu.com
     resource:
       token-info-uri: ${auth-server}/oauth/check_token
 
 logging:
   level:
     com.example.sso.auth.client: debug
+    org.springframework.security: debug

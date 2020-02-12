@@ -1,27 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="OFF">
+<Configuration>
     <Appenders>
-        <!--将日志在控制台输出-->
-        <Console name="Console" target="SYSTEM_OUT" follow="true">
-            <!--日志输出的格式-->
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss:SSS} %p $r [%t] %C.%M(%L) | %m%n"/>
-        </Console>
-     
-        <File name="fileAppender" fileName="logs/sso-auth-server.log">
-          <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss:SSS} %p $r [%t] %C.%M(%L) | %m%n"/>
-        </File>
+<!--        <Kafka name="kafkaLog" topic="kafka-logstash-topic" ignoreExceptions="false">-->
+<!--            <JsonLayout compact="true" eventEol="true" locationInfo="false">-->
+<!--                <KeyValuePair key="logdate" value="$${date:yyyy-MM-dd HH:mm:ss.SSS}"/>-->
+<!--            </JsonLayout>-->
+<!--            <Property name="bootstrap.servers">10.3.0.82:9092</Property>-->
+<!--        </Kafka>-->
+
+        <Console name="console" target="SYSTEM_OUT" follow="true"/>
     </Appenders>
-
     <Loggers>
-
-        <Root level="info">
-            <appender-ref ref="Console"/>
-            <appender-ref ref="fileAppender"/>
+        <Root level="info" includeLocation="false">
+            <AppenderRef ref="kafkaLog"/>
+            <AppenderRef ref="console"/>
         </Root>
-        <!-- For application define -->
-        <logger level="debug" name="com.saas.sso.auth.server">
-            <AppenderRef ref="Console" />
-            <AppenderRef ref="fileAppender"/>
-        </logger>
+        <!-- avoid recursive logging -->
+<!--        <Logger name="org.apache.kafka" level="INFO" />-->
     </Loggers>
 </Configuration>
